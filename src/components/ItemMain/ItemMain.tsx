@@ -287,6 +287,7 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
     const [startPerepolnen, setStartPerepolnen] = useState(0);
     const [isBack, setIsBack] = useState(false);
     const [lineCut, setLineCut] = useState(true);
+    const [lineCutBack, setLineCutBack] = useState(true);
     const fontMas = ["BookerlyBold", "BookerlyBoldItalic", "BookerlyDisplayBoldItalic", "BookerlyDisplay", "BookerlyItalic", "BookerlyLightItalic", "BookerlyLight", "Bookerly", "EtnaFreeFont", "GogonoCocoaMochiCyrillic", "GULAGPavljenko", "HellasDustCyrillic", "MorningBreezeBold", "MorningBreezeItalic", "MorningBreezeLight", "MorningBreeze", "OldSoviet", "SquareMeal", "ZarubkaTypeRegular", "ZaychikRegular"];
     const [targetFont1, setTargetFont1] = useState(7);
     const [isCSVRedactor, setIsCSVRedactor] = useState(false);
@@ -327,6 +328,9 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
     useEffect(() => {
         document.getElementById("ThisIsColorsConst")?.style.setProperty("--LineCut", lineCut ? '1px' : '0px' );
     }, [lineCut]);
+    useEffect(() => {
+        document.getElementById("ThisIsColorsConst")?.style.setProperty("--LineCutBack", lineCutBack ? '1px' : '0px' );
+    }, [lineCutBack]);
     useEffect(() => {
         for (let i = 0; i < colorsNames.length; i++) document.getElementById("ThisIsColorsConst")?.style.setProperty(colorsNames[i], colors[i]);
     }, [colors]);
@@ -1386,6 +1390,7 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
                             myNewSetting = ToString(myNewSetting, minMax, 'minMax');
                             myNewSetting = ToString(myNewSetting, kolvo, 'kolvo');
                             myNewSetting = ToString(myNewSetting, [lineCut], 'lineCut');
+                            myNewSetting = ToString(myNewSetting, [lineCutBack], 'lineCutBack');
                             myNewSetting = ToString(myNewSetting, [targetFont1], 'targetFont1');
                             myNewSetting = ToString(myNewSetting, [targetBackgroundNumber], 'targetBackgroundNumber');
                             myNewSetting = ToString(myNewSetting, [targetSvitokNumber], 'targetSvitokNumber');
@@ -1447,6 +1452,7 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
                                         setMinMax(FromFile(r as string, 'minMax', [...minMax]) as number[]);
                                         setKolvo(FromFile(r as string, 'kolvo', [...kolvo]) as number[]);
                                         setLineCut((FromFile(r as string, 'lineCut', [lineCut]) as boolean[])[0]);
+                                        setLineCutBack((FromFile(r as string, 'lineCutBack', [lineCutBack]) as boolean[])[0]);
                                         setTargetFont1((FromFile(r as string, 'targetFont1', [targetFont1]) as number[])[0]);
                                         setTargetBackgroundNumber((FromFile(r as string, 'targetBackgroundNumber', [targetBackgroundNumber]) as number[])[0]);
                                         setTargetSvitokNumber((FromFile(r as string, 'targetSvitokNumber', [targetSvitokNumber]) as number[])[0]);
@@ -1556,6 +1562,7 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
                             <OptionSize text={"Рубаха. Перекладина"} size={sizePole[15]} number={15} setSize={setSizePole} min={0} max={49} block={blockSizePole[15]} setBlock={setBlocSizePole} />
                             <OptionSize text={"Рубаха. Подпись"} textAs={"Как лицо"} size={sizePole[16]} number={16} setSize={setSizePole} min={0} max={49} block={blockSizePole[16]} setBlock={setBlocSizePole} />
                             <div className={style.NumbersExists}><div className={style.Exists} onClick={() => {setLineCut(!lineCut)}}> {"___"} {lineCut && <div/>}</div> <p>{"Линия разрезки (лицо)"}</p> </div>
+                            <div className={style.NumbersExists}><div className={style.Exists} onClick={() => {setLineCutBack(!lineCutBack)}}> {"___"} {lineCutBack && <div/>}</div> <p>{"Линия разрезки (зад)"}</p> </div>
                             <OptionSize text={"мм Высота листа"} size={sizePole[17]} number={17} setSize={setSizePole} min={50} max={500} block={blockSizePole[17]} setBlock={setBlocSizePole} />
                             <OptionSize text={"мм Ширина листа"} size={sizePole[18]} number={18} setSize={setSizePole} min={50} max={500} block={blockSizePole[18]} setBlock={setBlocSizePole} />
                             <div className={style.ButtonMinMax} onClick={() => {
