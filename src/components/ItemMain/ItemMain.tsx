@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC, Fragment } from 'react';
 import style from './ItemMain.module.scss';
 import CardItem from '../CardItem/CardItem';
 import { ReactComponent as Setting } from '../../images/Setting.svg';
@@ -245,6 +245,8 @@ import OptionAllain from '../OptionAllain/OptionAllain';
 import BaseTip from '../BaseTip/BaseTip';
 type AlertProps = {
 };
+const fontMas = ["BookerlyBold", "BookerlyBoldItalic", "BookerlyDisplayBoldItalic", "BookerlyDisplay", "BookerlyItalic", "BookerlyLightItalic", "BookerlyLight", "Bookerly", "EtnaFreeFont", "GogonoCocoaMochiCyrillic", "GULAGPavljenko", "HellasDustCyrillic", "MorningBreezeBold", "MorningBreezeItalic", "MorningBreezeLight", "MorningBreeze", "OldSoviet", "SquareMeal", "ZarubkaTypeRegular", "ZaychikRegular"];
+
 const SpellMain = ({ }: AlertProps): JSX.Element => {
     const [cards, setCards] = useState<string[][]>([]);
     const [newCard, setNewCard] = useState<string[]>([]);
@@ -285,10 +287,9 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
     const perepolnen: boolean[] = [];
     const [perepolnenText, setPerepolnenText] = useState('');
     const [startPerepolnen, setStartPerepolnen] = useState(0);
-    const [isBack, setIsBack] = useState(false);
+    const [sideMode, setSideMode] = useState(0);
     const [lineCut, setLineCut] = useState(true);
     const [lineCutBack, setLineCutBack] = useState(true);
-    const fontMas = ["BookerlyBold", "BookerlyBoldItalic", "BookerlyDisplayBoldItalic", "BookerlyDisplay", "BookerlyItalic", "BookerlyLightItalic", "BookerlyLight", "Bookerly", "EtnaFreeFont", "GogonoCocoaMochiCyrillic", "GULAGPavljenko", "HellasDustCyrillic", "MorningBreezeBold", "MorningBreezeItalic", "MorningBreezeLight", "MorningBreeze", "OldSoviet", "SquareMeal", "ZarubkaTypeRegular", "ZaychikRegular"];
     const [targetFont1, setTargetFont1] = useState(7);
     const [isCSVRedactor, setIsCSVRedactor] = useState(false);
     const [rubahaCaseNumber, setRubahaCaseNumber] = useState(9);
@@ -651,7 +652,8 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
         setNU();
     }
     const getBackCardImg = (PoleStr: string) => {
-        let A = Number(PoleStr); 
+        let A = Number(PoleStr);
+        if (PoleStr && isNaN(A)) return PoleStr;
         if (A == undefined || A == 0 || A > 231 || Number.isNaN(A)) {
             A = targetBackgroundNumber;
         }
@@ -897,7 +899,8 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
         }
     }
     const getSvitokCardImg = (PoleStr: string) => {
-        let A = Number(PoleStr); 
+        let A = Number(PoleStr);
+        if (PoleStr && isNaN(A)) return PoleStr;
         if (A == undefined || A == 0 || A > 4 || Number.isNaN(A)) {
             A = targetSvitokNumber;
         }
@@ -918,52 +921,45 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
     }
     const getCards = () => {
         let sumLists = [];
-        for (let i = 0; i < cards.length; i += kolvo[1] * kolvo[0]) sumLists[i / (kolvo[1] * kolvo[0])] = i;
+        for (let i = 0; i < cards.length; i += kolvo[1] * kolvo[0]) {
+            sumLists[i / (kolvo[1] * kolvo[0])] = i;
+        }
         return (
             <>
                 {
                     sumLists.map((a, index) => {
-                    return (
-                        <div className={style.List} key={"List" + index}>
-                            {
-                                Array.from(Array(kolvo[0]).keys()).map((a, index2) => {
-                                    return (
-                                        <div className={style.LineCards} key={"List" + index +" Line" + index2}>
-                                        {
-                                            Array.from(Array(kolvo[1]).keys()).map((a, index3) => {
-                                                if (isBack) {
-                                                    if (cards.length >= kolvo[1] * kolvo[0] * index + kolvo[1] * index2 + kolvo[1] - index3) {
-                                                        return (
-                                                            <div className={style.Card} key={index*kolvo[1]*kolvo[0] + index2*kolvo[1] + kolvo[1] - index3} >
-                                                                <CardItem targetFont={String(fontMas[targetFont1])} isBack={true} plusPerepolnen = {plusPerepolnen} minMax = {minMax} startPerepolnen={startPerepolnen} keyt={index * kolvo[1] * kolvo[0] + index2 * kolvo[1] + kolvo[1] - index3-1} Pole={cards[kolvo[1] * kolvo[0] * index + kolvo[1] * index2 + kolvo[1] - index3 -1]} />
-                                                            </div>
-                                                        );
-                                                    }
-                                                    return (
-                                                        <div className={style.Card } key={index*kolvo[1]*kolvo[0] + index2*kolvo[1] + kolvo[1] - index3} >
-                                                        </div>
-                                                    );
-                                                } else {
-                                                    if(cards.length > kolvo[1]*kolvo[0] * index + kolvo[1] * index2 + index3) {
-                                                        return (
-                                                            <div className={style.Card} key={index*kolvo[1]*kolvo[0] + index2*kolvo[1] + index3} >
-                                                                <CardItem targetFont={String(fontMas[targetFont1])} keyt={index*kolvo[1]*kolvo[0] + index2*kolvo[1] + index3} Pole={cards[kolvo[1]*kolvo[0] * index + kolvo[1] * index2 + index3]}  cardImg={String(getBackCardImg(cards[kolvo[1]*kolvo[0] * index + kolvo[1] * index2 + index3][1]))} svitok={String(getSvitokCardImg(cards[kolvo[1]*kolvo[0] * index + kolvo[1] * index2 + index3][2]))}/>
-                                                            </div>
-                                                        );
-                                                    }
-                                                    return (
-                                                        <div className={style.Card} key={index*kolvo[1]*kolvo[0] + index2*kolvo[1] + index3} >
-                                                        </div>
-                                                    );
-                                                }
-                                            })
-                                        }
-                                        </div>
-                                    );
-                                })
-                            }
-                        </div>
-                    );
+                        return <Fragment key={"P"+index}>
+                            {(sideMode === 0 || sideMode === 2) && (
+                                <SpellList
+                                    cards={cards}
+                                    kolvo={kolvo}
+                                    minMax={minMax}
+                                    isBack={false}
+                                    index={index}
+                                    key={"F"+index}
+                                    getBackCardImg={getBackCardImg}
+                                    getSvitokCardImg={getSvitokCardImg}
+                                    targetFont1={targetFont1}
+                                    plusPerepolnen={plusPerepolnen}
+                                    startPerepolnen={startPerepolnen}
+                                />
+                            )}
+                            {(sideMode === 1 || sideMode === 2) && (
+                                <SpellList
+                                    cards={cards}
+                                    kolvo={kolvo}
+                                    minMax={minMax}
+                                    isBack={true}
+                                    index={index}
+                                    key={"B"+index}
+                                    getBackCardImg={getBackCardImg}
+                                    getSvitokCardImg={getSvitokCardImg}
+                                    targetFont1={targetFont1}
+                                    plusPerepolnen={plusPerepolnen}
+                                    startPerepolnen={startPerepolnen}
+                                />
+                            )}
+                        </Fragment>
                     })
                 }
             </>
@@ -1355,22 +1351,38 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
                 {
                     !isCSVRedactor
                         ? <div className={style.ChangeCardViu}>
-                            <div className={style.RubahaViu + ' ' + (isBack ? '' : style.OnHover)} onClick={() => { setIsBack(false) }}>
+                            <div className={style.RubahaViu + ' ' + (sideMode === 0 ? style.OnHover : '')} onClick={() => {
+                                setSideMode(0)
+                            }}>
                                 <p>Лицо</p>
                             </div>
-                            <div className={style.RubahaViu + ' ' + (isBack ? style.OnHover : '')} onClick={() => { setIsBack(true) }}>
+                            <div className={style.RubahaViu + ' ' + (sideMode === 1 ? style.OnHover : '')} onClick={() => {
+                                setSideMode(1)
+                            }}>
                                 <p>Рубаха</p>
+                            </div>
+                            <div className={style.RubahaViu + ' ' + (sideMode === 2 ? style.OnHover : '')} onClick={() => {
+                                setSideMode(2)
+                            }}>
+                                <p>Обе стороны</p>
                             </div>
                         </div>
                         : null
                 }
             </div>
-            <Setting className={style.OptionsSetting} onClick={() => {setShowOptions(true);}}/>
+            <Setting className={style.OptionsSetting} onClick={() => {
+                setShowOptions(true);
+            }}/>
             <div className={style.Options + ' ' + (showOptions ? '' : style.HideWindow)}>
-                <div className={style.Hide}> <div className={style.Text} onClick={() => { setShowOptions(false); }}>Скрыть</div> </div>
+                <div className={style.Hide}>
+                    <div className={style.Text} onClick={() => {
+                        setShowOptions(false);
+                    }}>Скрыть
+                    </div>
+                </div>
                 <div className={style.OpionsCase}>
-                <div className={style.SettingDownload}>
-                        <div className={style.But} onClick={() => {
+                    <div className={style.SettingDownload}>
+                    <div className={style.But} onClick={() => {
                             //создаем файл
                             const ToString = (myNewSetting: string, myStringMas: string[]|boolean[]|number[], settingName: string) => {
                                 let r = myNewSetting + settingName + ':';
@@ -1816,3 +1828,73 @@ const SpellMain = ({ }: AlertProps): JSX.Element => {
     );
 }
 export default SpellMain;
+
+
+interface SpellListProps {
+    index: number,
+    isBack: boolean,
+    minMax: number[],
+    kolvo: number[],
+    cards: string[][],
+    getBackCardImg: (card: string) => string|undefined,
+    getSvitokCardImg: (card: string) => string|undefined,
+    targetFont1: string|number;
+    plusPerepolnen: (num: number, v: boolean) => void;
+    startPerepolnen: number;
+}
+const SpellList: FC<SpellListProps> = ({index, isBack, minMax, kolvo, cards, getBackCardImg, getSvitokCardImg, targetFont1, plusPerepolnen, startPerepolnen}) => {
+    const targetFont = typeof targetFont1 === "string" ? targetFont1 : String(fontMas[targetFont1])
+    return (
+        <div className={style.List} key={"List" + index}>
+            {
+                Array.from(Array(kolvo[0]).keys()).map((a, index2) => {
+                    return (
+                        <div className={style.LineCards} key={"List" + index + " Line" + index2}>
+                            {
+                                Array.from(Array(kolvo[1]).keys()).map((a, index3) => {
+                                    if (isBack) {
+                                        if (cards.length >= kolvo[1] * kolvo[0] * index + kolvo[1] * index2 + kolvo[1] - index3) {
+                                            return (
+                                                <div className={style.Card}
+                                                     key={index * kolvo[1] * kolvo[0] + index2 * kolvo[1] + kolvo[1] - index3}>
+                                                    <CardItem targetFont={targetFont} isBack={true}
+                                                              plusPerepolnen={plusPerepolnen} minMax={minMax}
+                                                              startPerepolnen={startPerepolnen}
+                                                              keyt={index * kolvo[1] * kolvo[0] + index2 * kolvo[1] + kolvo[1] - index3 - 1}
+                                                              Pole={cards[kolvo[1] * kolvo[0] * index + kolvo[1] * index2 + kolvo[1] - index3 - 1]}/>
+                                                </div>
+                                            );
+                                        }
+                                        return (
+                                            <div className={style.Card}
+                                                 key={index * kolvo[1] * kolvo[0] + index2 * kolvo[1] + kolvo[1] - index3}>
+                                            </div>
+                                        );
+                                    } else {
+                                        if (cards.length > kolvo[1] * kolvo[0] * index + kolvo[1] * index2 + index3) {
+                                            return (
+                                                <div className={style.Card}
+                                                     key={index * kolvo[1] * kolvo[0] + index2 * kolvo[1] + index3}>
+                                                    <CardItem targetFont={targetFont}
+                                                              keyt={index * kolvo[1] * kolvo[0] + index2 * kolvo[1] + index3}
+                                                              Pole={cards[kolvo[1] * kolvo[0] * index + kolvo[1] * index2 + index3]}
+                                                              cardImg={String(getBackCardImg(cards[kolvo[1] * kolvo[0] * index + kolvo[1] * index2 + index3][1]))}
+                                                              svitok={String(getSvitokCardImg(cards[kolvo[1] * kolvo[0] * index + kolvo[1] * index2 + index3][2]))}/>
+                                                </div>
+                                            );
+                                        }
+                                        return (
+                                            <div className={style.Card}
+                                                 key={index * kolvo[1] * kolvo[0] + index2 * kolvo[1] + index3}>
+                                            </div>
+                                        );
+                                    }
+                                })
+                            }
+                        </div>
+                    );
+                })
+            }
+        </div>
+    )
+}
